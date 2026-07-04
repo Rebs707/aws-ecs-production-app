@@ -1,30 +1,71 @@
-# AWS ECS Production App
+# 🚀 AWS ECS Fargate Deployment – Flask Application
 
-## Project Overview
+## 📌 Project Overview
+This project demonstrates an end-to-end deployment of a containerized Flask web application on AWS using ECS Fargate, Docker, and Amazon ECR. It follows a production-style cloud architecture with serverless container orchestration.
 
-This project demonstrates how to build, containerize, and deploy a production-style Python web application using Docker and AWS. It is being developed incrementally to showcase modern cloud engineering practices including Infrastructure as Code, containerization, CI/CD, and observability.
+---
 
-## Technology Stack
+## 🏗️ Architecture
 
-- Python 3.13
-- Flask
+User → HTTP Request → ECS Fargate Service → Docker Container (Flask App)  
+                             ↓  
+                        Amazon ECR (Image Registry)
+
+---
+
+## ⚙️ Tech Stack
+
+- Python (Flask)
 - Docker
-- Git
+- AWS ECS (Fargate)
+- Amazon ECR
+- AWS IAM
+- AWS VPC Networking
 
-## Current Status
+---
 
-✅ Flask application running locally
+## 🚀 Deployment Workflow
 
-✅ Docker image successfully built
+1. Built Flask application locally
+2. Containerized using Docker
+3. Created ECR repository
+4. Pushed Docker image to ECR
+5. Created ECS Cluster (Fargate)
+6. Defined Task Definition
+7. Deployed ECS Service
+8. Exposed application via public endpoint
+9. Verified deployment using curl
 
-✅ Application running inside a Docker container
+---
 
-⬜ Push image to Amazon ECR
+## 🌐 Live Application
 
-⬜ Provision infrastructure using Terraform
+http://ec2-32-192-52-217.compute-1.amazonaws.com:5000
 
-⬜ Deploy to Amazon ECS Fargate
+---
 
-⬜ Configure CloudWatch logging
+## 🧠 Key Learnings
 
-⬜ Implement GitHub Actions CI/CD
+- Container orchestration using AWS ECS Fargate
+- Docker image lifecycle management
+- IAM roles for ECS task execution
+- Networking with AWS VPC and security groups
+- Debugging real-world cloud deployment issues
+
+---
+
+## 📌 Status
+
+✔ Deployment Completed  
+✔ Verified via HTTP request  
+✔ Cloud resources cleaned up  
+
+---
+
+## 📈 Future Improvements
+
+- Add CI/CD pipeline using GitHub Actions
+- Add Application Load Balancer (ALB)
+- Add CloudWatch logging and monitoring
+- Terraform-based infrastructure automation
+
