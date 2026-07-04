@@ -1,17 +1,7 @@
-# Terraform
-.terraform/
-*.tfstate
-*.tfstate.*
-terraform.tfvars
-
-# Environment
+venv/
+__pycache__/
+*.pyc
+*.zip
+*.tar
 .env
-
-# Logs
-*.log
-
-# VS Code
-.vscode/
-
-# macOS
 .DS_Store
