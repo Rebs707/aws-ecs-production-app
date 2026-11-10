@@ -5,3 +5,26 @@ __pycache__/
 *.tar
 .env
 .DS_Store
+
+# Python virtual environments
+.venv/
+venv/
+env/
+
+# Python test and tooling caches
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# Build artifacts
+build/
+dist/
+*.egg-info/
+
+# Terraform local cache and state
+**/.terraform/
+*.tfstate
+*.tfstate.*
+*.tfplan

@@ -1,71 +1,152 @@
-# 🚀 AWS ECS Fargate Deployment – Flask Application
+# AWS ECS Production Application
 
-## 📌 Project Overview
-This project demonstrates an end-to-end deployment of a containerized Flask web application on AWS using ECS Fargate, Docker, and Amazon ECR. It follows a production-style cloud architecture with serverless container orchestration.
+A containerized Flask application with Docker hardening, automated testing, Terraform-based AWS infrastructure configuration, CI validation, and deployment rollback simulation.
 
----
+## Project Overview
 
-## 🏗️ Architecture
+This project demonstrates an end-to-end cloud application delivery workflow, from application development and containerization to infrastructure definition, validation, release testing, and rollback.
 
-User → HTTP Request → ECS Fargate Service → Docker Container (Flask App)  
-                             ↓  
-                        Amazon ECR (Image Registry)
+The target deployment architecture uses Amazon ECS Fargate, Amazon ECR, an Application Load Balancer, security groups, and Amazon CloudWatch Logs.
 
----
+## Architecture
 
-## ⚙️ Tech Stack
+See [Architecture Diagram](diagrams/architecture.md).
 
-- Python (Flask)
-- Docker
-- AWS ECS (Fargate)
-- Amazon ECR
-- AWS IAM
-- AWS VPC Networking
+### Target AWS Components
 
----
+| Component | Purpose |
+|---|---|
+| Amazon ECR | Container image repository |
+| Amazon ECS Fargate | Container orchestration |
+| Application Load Balancer | HTTP traffic distribution |
+| AWS VPC | Network isolation |
+| Security Groups | Traffic access control |
+| CloudWatch Logs | Application log collection |
+| Terraform | Infrastructure as Code |
 
-## 🚀 Deployment Workflow
+## Application
 
-1. Built Flask application locally
-2. Containerized using Docker
-3. Created ECR repository
-4. Pushed Docker image to ECR
-5. Created ECS Cluster (Fargate)
-6. Defined Task Definition
-7. Deployed ECS Service
-8. Exposed application via public endpoint
-9. Verified deployment using curl
+The Flask application exposes two endpoints:
 
----
+| Endpoint | Purpose |
+|---|---|
+| `/` | Application response |
+| `/health` | Application health check |
 
-## 🌐 Live Application
+Application port: `5001`
 
-http://ec2-32-192-52-217.compute-1.amazonaws.com:5000
+## Container Engineering
 
----
+The Docker image includes:
 
-## 🧠 Key Learnings
+- Python 3.13 slim base image
+- Gunicorn application server
+- Non-root application user
+- Container health check
+- Reduced runtime dependencies
+- Docker build-context exclusions
 
-- Container orchestration using AWS ECS Fargate
-- Docker image lifecycle management
-- IAM roles for ECS task execution
-- Networking with AWS VPC and security groups
-- Debugging real-world cloud deployment issues
+The container was also tested with:
 
----
+- Read-only root filesystem
+- Temporary writable `/tmp` filesystem
+- Linux capabilities dropped
+- `no-new-privileges` enabled
 
-## 📌 Status
+## Infrastructure as Code
 
-✔ Deployment Completed  
-✔ Verified via HTTP request  
-✔ Cloud resources cleaned up  
+The `terraform/` directory defines:
 
----
+- ECR repository with image scanning and immutable tags
+- ECS cluster and Fargate task definition
+- ECS service
+- Application Load Balancer and target group
+- Security groups
+- CloudWatch log group
+- ECS deployment circuit breaker with rollback
 
-## 📈 Future Improvements
+The configuration accepts an existing VPC, public subnets, and ECS task execution role as inputs.
 
-- Add CI/CD pipeline using GitHub Actions
-- Add Application Load Balancer (ALB)
-- Add CloudWatch logging and monitoring
-- Terraform-based infrastructure automation
+## CI/CD
 
+GitHub Actions workflow: `.github/workflows/ci.yml`
+
+Three validation jobs:
+
+1. Application tests using pytest
+2. Docker image build
+3. Terraform formatting and validation
+
+The workflow currently validates builds and configuration. It does not publish images or deploy to AWS.
+
+## Deployment and Rollback
+
+A local deployment simulation uses Docker image versions `v2` and `v3`.
+
+The deployment script:
+
+- Starts a candidate container
+- Checks the application health endpoint
+- Detects failed releases
+- Restores the previously running image
+- Verifies rollback health
+
+A controlled failure test demonstrated automatic restoration of the previous healthy v3 image.
+
+See [Deployment and Rollback](docs/deployment-and-rollback.md).
+
+## Validation Results
+
+- Five Flask application tests passed.
+- Docker v3 image built successfully.
+- Application and health endpoints verified.
+- Non-root container execution verified.
+- Hardened container runtime checks passed.
+- Terraform formatting and validation passed.
+- CI workflow commands tested locally.
+- v2 and v3 release checks passed.
+- Controlled deployment failure and rollback simulation passed.
+
+See [Validation Evidence Register](docs/validation-evidence.md).
+
+## AWS Deployment Status
+
+**AWS provisioning was not performed in the KodeKloud sandbox.**
+
+The sandbox did not provide an eligible ECS task execution role, and IAM role creation was denied.
+
+Terraform configuration was formatted and validated locally. Actual AWS resource provisioning and production deployment remain unverified.
+
+The project therefore distinguishes local engineering validation from AWS deployment validation.
+
+## Repository Structure
+
+```text
+.
+├── .github/
+│   └── workflows/
+│       └── ci.yml
+├── app/
+│   ├── app.py
+│   └── requirements.txt
+├── diagrams/
+│   └── architecture.md
+├── docs/
+│   ├── deployment-and-rollback.md
+│   └── validation-evidence.md
+├── scripts/
+│   └── deploy-local.sh
+├── terraform/
+│   ├── main.tf
+│   ├── outputs.tf
+│   ├── variables.tf
+│   ├── versions.tf
+│   └── terraform.tfvars.example
+├── tests/
+│   └── test_app.py
+├── Dockerfile
+├── .dockerignore
+├── .gitignore
+├── pytest.ini
+├── requirements-dev.txt
+└── README.md

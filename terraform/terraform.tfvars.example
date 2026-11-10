@@ -1,0 +1,17 @@
+aws_region = "us-east-1"
+app_name   = "aws-ecs-production-app"
+environment = "production"
+
+# Supply IDs from an eligible VPC and at least two public subnets.
+vpc_id = "REPLACE_WITH_VPC_ID"
+public_subnet_ids = [
+  "REPLACE_WITH_PUBLIC_SUBNET_ID_1",
+  "REPLACE_WITH_PUBLIC_SUBNET_ID_2"
+]
+
+# Must be an existing role with ECS task execution permissions.
+execution_role_arn = "REPLACE_WITH_EXISTING_EXECUTION_ROLE_ARN"
+
+container_port = 5001
+image_tag      = "v3"
+desired_count  = 1
